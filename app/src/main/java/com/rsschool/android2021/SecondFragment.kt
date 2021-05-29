@@ -1,11 +1,13 @@
 package com.rsschool.android2021
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 
 class SecondFragment : Fragment() {
@@ -13,12 +15,19 @@ class SecondFragment : Fragment() {
     private var backButton: Button? = null
     private var result: TextView? = null
 
+    private var listener: SecondListener? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_second, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = context as SecondListener
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,12 +42,21 @@ class SecondFragment : Fragment() {
 
         backButton?.setOnClickListener {
             // TODO: implement back
+            listener?.tapBackButton(result?.text.toString().toInt())
         }
+
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                listener?.tapBackButton(result?.text.toString().toInt())
+            }
+        })
+
     }
 
     private fun generate(min: Int, max: Int): Int {
         // TODO: generate random number
-        return 0
+
+        return (min..max).random()
     }
 
     companion object {
@@ -50,10 +68,19 @@ class SecondFragment : Fragment() {
 
             // TODO: implement adding arguments
 
+            args.putInt(MIN_VALUE_KEY, min)
+            args.putInt(MAX_VALUE_KEY, max)
+
+            fragment.arguments = args
+
             return fragment
         }
 
         private const val MIN_VALUE_KEY = "MIN_VALUE"
         private const val MAX_VALUE_KEY = "MAX_VALUE"
+    }
+
+    interface SecondListener {
+        fun tapBackButton(previousResult: Int)
     }
 }
