@@ -43,11 +43,9 @@ class FirstFragment : Fragment() {
         previousResult?.text = "Previous result: ${result.toString()}"
 
         // TODO: val min = ...
-//        val min =
         minValueField = view.findViewById(R.id.min_value)
 
         // TODO: val max = ...
-//        val max =
         maxValueField = view.findViewById(R.id.max_value)
 
         generateButton?.setOnClickListener {
